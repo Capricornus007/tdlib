@@ -3,7 +3,7 @@ set -e
 
 OPENSSL_SOURCE_DIR=${1:-openssl}
 OPENSSL_INSTALL_DIR=${2:-build/openssl}
-TGX_FLAVORS=${3:-"latest qrs tens marshmallow lollipop legacy"}
+TGX_FLAVORS=${3:-"latest qrs tens marshmallow lollipop"}
 
 source "$(pwd)/setup.sh" || exit 1
 
@@ -35,13 +35,8 @@ make distclean > /dev/null 2>&1 || true
 ORIGINAL_PATH="$PATH"
 
 for TGX_FLAVOR in $TGX_FLAVORS; do
-  if [ "${TGX_FLAVOR}" != "legacy" ]; then
-    ANDROID_NDK_VERSION="$ANDROID_NDK_VERSION_PRIMARY"
-    ABIS="arm64-v8a armeabi-v7a x86_64 x86"
-  else
-    ANDROID_NDK_VERSION="$ANDROID_NDK_VERSION_LEGACY"
-    ABIS="armeabi-v7a x86"
-  fi
+  ANDROID_NDK_VERSION="$ANDROID_NDK_VERSION_PRIMARY"
+  ABIS="arm64-v8a armeabi-v7a x86_64 x86"
 
   case "${TGX_FLAVOR}" in
     latest)
@@ -58,9 +53,6 @@ for TGX_FLAVOR in $TGX_FLAVORS; do
       ;;
     lollipop)
       ANDROID_API_LEVEL=21
-      ;;
-    legacy)
-      ANDROID_API_LEVEL=16
       ;;
     *)
       echo -e "${STYLE_ERROR}Unsupported flavor: ${TGX_FLAVOR}.${STYLE_END}"
